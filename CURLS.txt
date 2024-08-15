@@ -1,0 +1,7 @@
+Add Create Files
+
+curl  --location localhost:8080/files --include --header "Content-Type:application/json" --request "POST" --data-raw '{"filename":"saumya"}'
+
+Get Files
+
+curl localhost:8080/files
