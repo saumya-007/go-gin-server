@@ -15,7 +15,7 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"GET", "POST", "PUT", "OPTIONS"},
+		AllowMethods: []string{"GET", "POST", "PUT", "OPTIONS", "DELETE"},
 		AllowHeaders: []string{
 			"x-tenant-id",
 			"x-workspace-id",
@@ -33,6 +33,7 @@ func main() {
 
 func solvedQuestionsRoutes(router *gin.Engine) {
 	router.GET("/solved-questions", controller.GetSolvedQuestions)
+	router.GET("/solved-questions/:id", controller.GetSolvedQuestionsById)
 	router.POST("/solved-question", controller.AddSolvedQuestion)
 	router.PUT("/solved-question/:id", controller.UpdateSolvedQuestion)
 	router.DELETE("/solved-question/:id", controller.DeleteSolvedQuestion)

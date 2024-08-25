@@ -1,7 +1,8 @@
 package apis
 
 import (
-	"fmt"
+	// note: used for server side logging
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,14 @@ func GetSolvedQuestions(c *gin.Context) {
 	solvedQuestionsList := SolvedQuestionsDdAccess.GetSolvedQuestions()
 
 	c.IndentedJSON(http.StatusOK, solvedQuestionsList)
+}
+
+func GetSolvedQuestionsById(c *gin.Context) {
+	solvedQuestionId := c.Param("id")
+
+	solvedQuestion := SolvedQuestionsDdAccess.GetSolvedQuestionById(solvedQuestionId)
+
+	c.IndentedJSON(http.StatusOK, solvedQuestion)
 }
 
 func AddSolvedQuestion(c *gin.Context) {
@@ -73,8 +82,6 @@ func DeleteSolvedQuestion(c *gin.Context) {
 
 	questionDetailFromDb := SolvedQuestionsDdAccess.GetSolvedQuestionById(solvedQuestionId)
 
-	fmt.Println(questionDetailFromDb)
-
 	if questionDetailFromDb == nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"message": "Question details not found",
@@ -83,6 +90,8 @@ func DeleteSolvedQuestion(c *gin.Context) {
 	}
 
 	deletedCount := SolvedQuestionsDdAccess.SoftDeleteSolvedQuestion(solvedQuestionId)
+
+	log.Printf("Deleted Count : %v/n", deletedCount)
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"deleted_count": deletedCount,
