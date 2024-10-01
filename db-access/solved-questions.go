@@ -12,12 +12,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetSolvedQuestions() []primitive.M {
+func GetSolvedQuestions(questionCategory string) []primitive.M {
 
 	// note: keep it empty if we don't want to apply any filter
 	filter := bson.M{
 		"is_deleted": false,
 	}
+
+	if questionCategory != "" {
+		filter["problem_category"] = questionCategory
+	}
+
 	cnxt := context.Background()
 
 	cursor, err := SolvedQuestionCollection.Find(cnxt, filter)
@@ -85,6 +90,29 @@ func GetSolvedQuestionById(solvedQuestionId string) primitive.M {
 	}
 
 	return solvedQuestionFromDb
+}
+
+func GetSolvedQuestionsCategories() []string {
+	filter := bson.M{
+		"is_deleted": false,
+	}
+
+	cnxt := context.Background()
+
+	categoryDetail, err := SolvedQuestionCollection.Distinct(cnxt, "problem_category", filter)
+	if err != nil {
+		log.Fatal()
+	}
+
+	var categoryList []string
+
+	for _, category := range categoryDetail {
+		if str, ok := category.(string); ok {
+			categoryList = append(categoryList, str)
+		}
+	}
+
+	return categoryList
 }
 
 func AddSolvedQuestion(questionDetails SolvedQuestionsEntity.QuestionsDetails) primitive.ObjectID {

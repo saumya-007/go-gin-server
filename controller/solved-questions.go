@@ -12,8 +12,9 @@ import (
 
 // note: gin context will have all of the information about a request
 func GetSolvedQuestions(c *gin.Context) {
+	questionCategory := c.Query("category")
 
-	solvedQuestionsList := SolvedQuestionsDdAccess.GetSolvedQuestions()
+	solvedQuestionsList := SolvedQuestionsDdAccess.GetSolvedQuestions(questionCategory)
 
 	c.IndentedJSON(http.StatusOK, solvedQuestionsList)
 }
@@ -24,6 +25,12 @@ func GetSolvedQuestionsById(c *gin.Context) {
 	solvedQuestion := SolvedQuestionsDdAccess.GetSolvedQuestionById(solvedQuestionId)
 
 	c.IndentedJSON(http.StatusOK, solvedQuestion)
+}
+
+func GetSolvedQuestionsCategories(c *gin.Context) {
+	categoryList := SolvedQuestionsDdAccess.GetSolvedQuestionsCategories()
+
+	c.IndentedJSON(http.StatusOK, categoryList)
 }
 
 func AddSolvedQuestion(c *gin.Context) {
